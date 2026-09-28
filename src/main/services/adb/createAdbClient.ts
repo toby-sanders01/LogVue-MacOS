@@ -9,7 +9,7 @@ export function createAdbClient(settings?: AppSettings): AdbLike {
     return new FakeAdbClient(settings.hubLogFolder, settings.folderTimeOffsetMinutes * 60_000)
   }
   if (settings?.hubDataSource === 'folder') return new MissingHubLogFolderClient()
-  return fakeHubRoot ? new FakeAdbClient(fakeHubRoot) : new AdbClient()
+  return fakeHubRoot ? new FakeAdbClient(fakeHubRoot) : new AdbClient(settings?.adbPath)
 }
 
 class MissingHubLogFolderClient implements AdbLike {

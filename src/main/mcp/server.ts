@@ -16,12 +16,11 @@ import { listHubLogs } from '../services/adb/hublogs'
 import { getAdbClient } from '../services/adb/runtime'
 import { readMetadata } from '../services/archive/SessionStore'
 import { runSingleImportTask } from '../services/import/importTask'
-import { INTERNAL_DIR } from '../services/archive/paths'
 import { LOGVUE_MCP_INSTRUCTIONS, LOGVUE_MCP_TOOLS } from '@shared/mcp/tools'
 import type { McpStatus } from '@shared/types/ipc'
 
-export const MCP_HOST = '0.0.0.0'
-export const MCP_PORT = 47831
+export const MCP_HOST = '127.0.0.1'
+export const MCP_PORT = 47832
 export const MCP_PATH = '/mcp'
 export const MCP_DISCOVERY_FILE = 'mcp.json'
 export const MCP_BRIDGE_FILE = 'logvue-mcp.cjs'
@@ -33,7 +32,7 @@ let lastRequestAt: string | null = null
 
 function mcpDataPath(): string {
   if (process.platform === 'win32' && process.env.LOCALAPPDATA) {
-    return join(process.env.LOCALAPPDATA, 'LogVue', 'MCP')
+    return join(process.env.LOCALAPPDATA, 'LogVue-MacOS', 'MCP')
   }
   return join(app.getPath('userData'), 'MCP')
 }
@@ -48,8 +47,7 @@ function appBridgePath(): string {
 
 function loadStableBearerToken(): string {
   const candidates = [appDiscoveryPath(), join(app.getPath('userData'), MCP_DISCOVERY_FILE)]
-  const archiveRoot = getSettings().archiveRoot
-  if (archiveRoot) candidates.push(join(archiveRoot, INTERNAL_DIR, MCP_DISCOVERY_FILE))
+  // Never reuse an upstream archive's credential.
   for (const candidate of candidates) {
     try {
       const parsed = JSON.parse(readFileSync(candidate, 'utf8')) as { token?: unknown }
@@ -104,7 +102,7 @@ function normalizeAgentPath(input: string): string {
 
 function createLogVueMcpServer(appVersion: string): McpServer {
   const server = new McpServer(
-    { name: 'logvue', version: appVersion },
+    { name: 'logvue-macos', version: appVersion },
     { instructions: LOGVUE_MCP_INSTRUCTIONS }
   )
 
@@ -189,7 +187,7 @@ export async function startMcpServer(appVersion: string): Promise<void> {
     httpServer?.listen(MCP_PORT, MCP_HOST, () => resolveReady())
   })
   writeDiscoveryFile(bearerToken)
-  console.info(`LogVue MCP server listening on port ${MCP_PORT} (loopback + authenticated WSL access)`)
+  console.info(`LogVue MCP server listening on port ${MCP_PORT} (local macOS access)`)
 }
 
 /** Publish a dependency-bundled bridge at a stable path outside the app install. */

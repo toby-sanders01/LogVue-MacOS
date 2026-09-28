@@ -25,7 +25,7 @@ const Discovery = z.object({
  */
 export function createLogVueMcpBridge(discoveryPath: string): McpServer {
   const bridge = new McpServer(
-    { name: 'logvue', version: BRIDGE_VERSION },
+    { name: 'logvue-macos', version: BRIDGE_VERSION },
     { instructions: LOGVUE_MCP_INSTRUCTIONS }
   )
 

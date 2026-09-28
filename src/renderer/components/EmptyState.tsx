@@ -5,7 +5,7 @@ export default function EmptyState(): JSX.Element {
   return (
     <div className="empty-state">
       <div className="empty-card">
-        <h1>LogVue</h1>
+        <h1>LogVue-MacOS</h1>
         <p className="muted">
           Choose (or create) a folder to hold your FTC log library. Everything is stored as plain
           folders you can browse, copy, and back up — LogVue just organises them.

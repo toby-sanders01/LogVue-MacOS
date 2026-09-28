@@ -1,5 +1,6 @@
+import './config/appIdentity'
 import { join } from 'path'
-import { app, BrowserWindow, shell } from 'electron'
+import { app, BrowserWindow, Menu, shell } from 'electron'
 import { registerIpcHandlers } from './ipc/registry'
 import { getSettings } from './config/settings'
 import { closeIndex, ensureIndexBuilt } from './services/index/indexService'
@@ -13,7 +14,7 @@ function createWindow(): void {
     minWidth: 900,
     minHeight: 600,
     show: false,
-    title: 'LogVue',
+    title: 'LogVue-MacOS',
     autoHideMenuBar: true,
     backgroundColor: '#0e1116',
     webPreferences: {
@@ -44,7 +45,25 @@ function createWindow(): void {
   }
 }
 
+const hasLock = app.requestSingleInstanceLock()
+if (!hasLock) app.quit()
+app.on('second-instance', () => {
+  const win = BrowserWindow.getAllWindows()[0]
+  if (win?.isMinimized()) win.restore()
+  win?.show()
+  win?.focus()
+})
+
 app.whenReady().then(() => {
+  if (!hasLock) return
+  if (process.platform === 'darwin') {
+    Menu.setApplicationMenu(Menu.buildFromTemplate([
+      { role: 'appMenu' },
+      { role: 'editMenu' },
+      { role: 'viewMenu' },
+      { role: 'windowMenu' }
+    ]))
+  }
   registerIpcHandlers()
   // Cold start (§6.2): open the index for the saved archive root and build it if
   // empty/stale, before the renderer asks for anything. The index is disposable,

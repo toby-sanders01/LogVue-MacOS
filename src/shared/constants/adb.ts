@@ -12,5 +12,5 @@ export const DEFAULT_ADB_ADDRESS = '192.168.43.1:5555'
  * path — we wrap the system `adb`). Keep it a friendly hint, not a stack trace.
  */
 export const ADB_NOT_FOUND_HINT =
-  'adb was not found on your PATH. Install Android Platform Tools and make sure ' +
-  '`adb` runs from a terminal, then reconnect the Control Hub.'
+  'ADB was not found. Install Android Platform Tools, then choose its adb executable in Settings. ' +
+  'You can also use Folder Import without ADB.'

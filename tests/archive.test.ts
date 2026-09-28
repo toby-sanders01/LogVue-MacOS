@@ -2,7 +2,7 @@ import {
   chmodSync,
   existsSync,
   mkdirSync,
-  mkdtempSync,
+  mkdtempSync, realpathSync,
   readdirSync,
   readFileSync,
   rmSync,
@@ -33,7 +33,7 @@ function writeSession(dir: string, meta: Record<string, unknown>): void {
 }
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'logvue-'))
+  root = realpathSync(mkdtempSync(join(tmpdir(), 'logvue-')))
 })
 afterEach(() => {
   rmSync(root, { recursive: true, force: true })

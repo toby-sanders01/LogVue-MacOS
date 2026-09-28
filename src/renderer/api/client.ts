@@ -23,6 +23,8 @@ export const api = {
     setTeamNumber: (teamNumber: number | null) =>
       window.api.invoke('settings:setTeamNumber', teamNumber),
     setAdbAddress: (address: string) => window.api.invoke('settings:setAdbAddress', address),
+    pickAdbExecutable: () => window.api.invoke('settings:pickAdbExecutable'),
+    setAdbPath: (path: string | null) => window.api.invoke('settings:setAdbPath', path),
     pickHubLogFolder: () => window.api.invoke('settings:pickHubLogFolder'),
     setHubDataSource: (source: 'adb' | 'folder') =>
       window.api.invoke('settings:setHubDataSource', source),

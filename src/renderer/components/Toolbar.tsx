@@ -42,7 +42,7 @@ export default function Toolbar({ settings, onNewTopLevel, onSettings, onMcpSetu
 
   return (
     <header className="toolbar">
-      <span className="brand">LogVue</span>
+      <span className="brand">LogVue-MacOS</span>
 
       <div className="root">
         <span className="root-label">Library</span>

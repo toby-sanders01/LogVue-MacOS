@@ -210,6 +210,17 @@ export function useSetFolderTimeOffsetMinutes() {
   })
 }
 
+export function useSetAdbPath() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (path: string | null) => api.settings.setAdbPath(path),
+    onSuccess: (settings) => {
+      qc.setQueryData(keys.settings, settings)
+      qc.invalidateQueries({ queryKey: ['adb'] })
+    }
+  })
+}
+
 export function useSetAdbAddress() {
   const qc = useQueryClient()
   return useMutation({

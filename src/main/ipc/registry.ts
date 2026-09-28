@@ -3,6 +3,7 @@ import { existsSync } from 'fs'
 import { join } from 'path'
 import type { AppInfo, IpcApi } from '@shared/types/ipc'
 import { getSettings, saveSettings } from '../config/settings'
+import { resolveAdbExecutable } from '../services/adb/resolveAdb'
 import * as archive from '../services/archive/ArchiveService'
 import { readNotes } from '../services/archive/SessionStore'
 import {
@@ -83,6 +84,20 @@ const handlers: Handlers = {
     const trimmed = address.trim()
     if (!trimmed) throw new Error('Enter an ADB address before saving')
     const next = saveSettings({ adbAddress: trimmed })
+    refreshAdbClient()
+    return next
+  },
+  'settings:pickAdbExecutable': async () => {
+    const win = BrowserWindow.getFocusedWindow() ?? undefined
+    const result = await dialog.showOpenDialog(win!, {
+      title: 'Choose the adb executable in platform-tools',
+      properties: ['openFile']
+    })
+    return result.canceled ? null : result.filePaths[0] ?? null
+  },
+  'settings:setAdbPath': async (path) => {
+    if (path) resolveAdbExecutable(path)
+    const next = saveSettings({ adbPath: path })
     refreshAdbClient()
     return next
   },

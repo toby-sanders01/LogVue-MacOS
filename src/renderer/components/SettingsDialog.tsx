@@ -7,6 +7,7 @@ import {
   usePickArchiveRoot,
   usePickHubLogFolder,
   useSetAdbAddress,
+  useSetAdbPath,
   useSetConfirmDeletePopulatedSessions,
   useSetFolderTimeOffsetMinutes,
   useSetHubDataSource
@@ -25,12 +26,29 @@ export default function SettingsDialog({ settings, onClose }: Props): JSX.Elemen
   )
   const pickLibrary = usePickArchiveRoot()
   const setAdbAddress = useSetAdbAddress()
+  const setAdbPath = useSetAdbPath()
+  const [adbPickerError, setAdbPickerError] = useState<string | null>(null)
+  const [pickingAdb, setPickingAdb] = useState(false)
+
+  async function pickAdb(): Promise<void> {
+    setAdbPickerError(null)
+    setPickingAdb(true)
+    try {
+      const path = await api.settings.pickAdbExecutable()
+      if (path) await setAdbPath.mutateAsync(path)
+    } catch (err) {
+      setAdbPickerError(err instanceof Error ? err.message : String(err))
+    } finally {
+      setPickingAdb(false)
+    }
+  }
   const setHubDataSource = useSetHubDataSource()
   const pickHubLogFolder = usePickHubLogFolder()
   const clearHubLogFolder = useClearHubLogFolder()
   const setFolderTimeOffset = useSetFolderTimeOffsetMinutes()
   const setDeleteConfirmation = useSetConfirmDeletePopulatedSessions()
   const busy =
+    pickingAdb || setAdbPath.isPending ||
     pickLibrary.isPending ||
     setHubDataSource.isPending ||
     pickHubLogFolder.isPending ||
@@ -115,6 +133,22 @@ export default function SettingsDialog({ settings, onClose }: Props): JSX.Elemen
             </label>
           )}
 
+          {settings.hubDataSource === 'adb' && (
+            <div className="field">
+              <span>ADB executable</span>
+              <code className="settings-path">{settings.adbPath ?? 'Automatic (PATH, Android SDK, Homebrew)'}</code>
+              <div>
+                <button type="button" className="ghost sm" onClick={() => void pickAdb()} disabled={busy}>Choose…</button>
+                {settings.adbPath && <button type="button" className="ghost sm" onClick={() => {
+                  setAdbPickerError(null)
+                  void setAdbPath.mutateAsync(null).catch((err) => setAdbPickerError(String(err)))
+                }} disabled={busy}>Use automatic</button>}
+              </div>
+              <span className="muted small">Select adb inside Android Platform Tools if Finder cannot find it. Folder Import works without ADB.</span>
+              {adbPickerError && <span role="alert">{adbPickerError}</span>}
+            </div>
+          )}
+
           {settings.hubDataSource === 'folder' && (
             <>
               <div className="folder-source-selection">
@@ -183,9 +217,9 @@ export default function SettingsDialog({ settings, onClose }: Props): JSX.Elemen
         </section>
 
         <section className="settings-section vertical about-section">
-          <h3>About LogVue</h3>
+          <h3>About LogVue-MacOS</h3>
           <div className="about-copy">
-            <strong>LogVue {appInfo ? `v${appInfo.appVersion}` : ''}</strong>
+            <strong>LogVue-MacOS {appInfo ? `v${appInfo.appVersion}` : ''}</strong>
             <span className="muted small">© 2026 Jack Wilson · BSD 3-Clause License</span>
             <span className="muted small">
               Third-party software notices and license texts are included with this app.

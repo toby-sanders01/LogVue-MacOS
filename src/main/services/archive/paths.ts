@@ -5,11 +5,11 @@ import { writeFile } from 'fs/promises'
 export const SESSION_JSON = 'session.json'
 export const NOTES_FILE = 'notes.md'
 /** App-owned archive data. Never presented as a session or indexed as content. */
-export const INTERNAL_DIR = '.logvue'
+export const INTERNAL_DIR = '.logvue-macos'
 export const INDEX_FILE = 'index.sqlite'
 
 /** Files/folders the scanner ignores as archive plumbing, not content. */
-export const RESERVED_NAMES = new Set([SESSION_JSON, INTERNAL_DIR, INDEX_FILE])
+export const RESERVED_NAMES = new Set([SESSION_JSON, INTERNAL_DIR, '.logvue', INDEX_FILE])
 
 /**
  * Transient artifacts (in-flight atomic writes, editor backups) that must never

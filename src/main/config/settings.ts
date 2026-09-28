@@ -7,6 +7,7 @@ import type { AppSettings } from '@shared/types/session'
 
 const DEFAULTS: AppSettings = {
   archiveRoot: null,
+  adbPath: null,
   teamNumber: null,
   adbAddress: DEFAULT_ADB_ADDRESS,
   hubDataSource: 'adb',

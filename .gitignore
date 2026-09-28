@@ -6,6 +6,7 @@ release/
 *.log
 .DS_Store
 .logvue/
+.logvue-macos/
 
 # WSL / Windows metadata cruft
 *:Zone.Identifier

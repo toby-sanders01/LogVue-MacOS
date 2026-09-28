@@ -22,12 +22,12 @@ afterEach(() => {
 })
 
 describe('ensureIndexLocation', () => {
-  it('creates .logvue for a new archive', () => {
-    expect(ensureIndexLocation(root)).toBe(join(root, '.logvue', 'index.sqlite'))
+  it('creates an isolated .logvue-macos index', () => {
+    expect(ensureIndexLocation(root)).toBe(join(root, '.logvue-macos', 'index.sqlite'))
     expect(existsSync(indexDirectory(root))).toBe(true)
   })
 
-  it('migrates the legacy database and all SQLite sidecars', () => {
+  it('leaves the legacy database and all SQLite sidecars untouched', () => {
     const legacy = join(root, 'index.sqlite')
     const files = ['', '-wal', '-shm', '-journal']
     for (const suffix of files) writeFileSync(`${legacy}${suffix}`, `legacy${suffix}`)
@@ -36,12 +36,12 @@ describe('ensureIndexLocation', () => {
 
     expect(current).toBe(indexPath(root))
     for (const suffix of files) {
-      expect(existsSync(`${legacy}${suffix}`)).toBe(false)
-      expect(readFileSync(`${current}${suffix}`, 'utf-8')).toBe(`legacy${suffix}`)
+      expect(readFileSync(`${legacy}${suffix}`, 'utf-8')).toBe(`legacy${suffix}`)
+      expect(existsSync(`${current}${suffix}`)).toBe(false)
     }
   })
 
-  it('keeps an existing .logvue database authoritative', () => {
+  it('keeps the existing fork index without touching legacy data', () => {
     mkdirSync(indexDirectory(root), { recursive: true })
     writeFileSync(indexPath(root), 'current')
     const legacy = join(root, 'index.sqlite')
@@ -51,6 +51,15 @@ describe('ensureIndexLocation', () => {
     expect(readFileSync(indexPath(root), 'utf-8')).toBe('current')
     expect(readFileSync(legacy, 'utf-8')).toBe('legacy')
   })
+})
+
+it('leaves the upstream LogVue index untouched', () => {
+  const upstream = join(root, '.logvue', 'index.sqlite')
+  mkdirSync(join(root, '.logvue'), { recursive: true })
+  writeFileSync(upstream, 'upstream database')
+  ensureIndexLocation(root)
+  expect(readFileSync(upstream, 'utf8')).toBe('upstream database')
+  expect(existsSync(indexPath(root))).toBe(false)
 })
 
 describe('archive keys', () => {

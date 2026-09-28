@@ -141,6 +141,8 @@ export interface AppSettings {
   teamNumber: number | null
   /** Wireless Control Hub target passed to `adb connect`. */
   adbAddress: string
+  /** Optional absolute system ADB executable path; null enables automatic detection. */
+  adbPath?: string | null
   hubDataSource: 'adb' | 'folder'
   hubLogFolder: string | null
   /** Minutes added to timestamps read from the selected folder source. */

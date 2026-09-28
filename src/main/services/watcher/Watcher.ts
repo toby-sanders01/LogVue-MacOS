@@ -47,7 +47,7 @@ export function pauseArchiveWatcher(): () => void {
 }
 
 export function shouldIgnoreArchivePath(path: string): boolean {
-  if (path.split(/[\\/]+/).includes(INTERNAL_DIR)) return true
+  if (path.split(/[\\/]+/).some((part) => part === INTERNAL_DIR || part === '.logvue')) return true
   const name = basename(path)
   if (!name) return false
   if (name === INDEX_FILE || name === `${INDEX_FILE}-wal` || name === `${INDEX_FILE}-shm`) return true

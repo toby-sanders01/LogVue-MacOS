@@ -26,8 +26,8 @@ export default function McpSetupDialog({ archiveRoot, onClose }: Props): JSX.Ele
     wslBridgePath === bridgePath
       ? null
       : JSON.stringify({ type: 'stdio', command: 'node', args: [wslBridgePath] }, null, 2)
-  const codexCommand = `codex mcp add logvue -- node ${quotedBridgePath}`
-  const claudeCommand = `claude mcp add --scope user logvue -- node ${quotedBridgePath}`
+  const codexCommand = `codex mcp add logvue-macos -- node ${quotedBridgePath}`
+  const claudeCommand = `claude mcp add --scope user logvue-macos -- node ${quotedBridgePath}`
 
   async function copyText(label: string, value: string): Promise<void> {
     await navigator.clipboard.writeText(value)

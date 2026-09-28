@@ -4,6 +4,8 @@ import { RLOG_EXT, RLOG_ROOT } from '@shared/constants/adb'
 import type { AdbStatus } from '@shared/types/hublog'
 import { parseFindOutput, parseLsOutput, remoteBasename } from './parseLs'
 
+import { resolveAdbExecutable } from './resolveAdb'
+
 const execFileAsync = promisify(execFile)
 const ADB_CONNECT_TIMEOUT_MS = 10_000
 
@@ -60,10 +62,12 @@ export function parseAdbTimezoneOffset(out: string): number | null {
  * coexist, attaching to whatever daemon is already running.
  */
 export class AdbClient implements AdbLike {
+  constructor(private readonly adbPath?: string | null) {}
+
   /** Run a raw `adb` invocation. Maps a missing binary to {@link AdbNotFoundError}. */
   private async run(args: string[], timeout = 15_000): Promise<string> {
     try {
-      const { stdout } = await execFileAsync('adb', args, {
+      const { stdout } = await execFileAsync(resolveAdbExecutable(this.adbPath), args, {
         timeout,
         maxBuffer: 8 * 1024 * 1024,
         windowsHide: true

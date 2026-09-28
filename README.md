@@ -1,3 +1,30 @@
+# LogVue-MacOS alpha
+
+Independent macOS fork of [melonbotics/LogVue](https://github.com/melonbotics/LogVue).
+Version `0.1.1-macos.alpha.1`. The original project's copyright and BSD 3-Clause
+license are preserved. This alpha is maintained separately from the original project.
+
+- macOS `.app`, DMG, and ZIP packaging for Apple Silicon and Intel.
+- Finder-compatible ADB detection plus a native executable picker in Settings.
+- Folder imports, session library, notes, search, and local MCP tools.
+- Independent settings, SQLite index, MCP port, and MCP client registration.
+- Manual build workflow; no automatic release publishing or upstream changes.
+
+See [macOS alpha setup and limitations](doc/macos-alpha.md).
+
+```sh
+npm ci
+npm run package:mac:arm64  # Apple Silicon
+npm run package:mac:x64    # Intel (prefer building on an Intel Mac)
+```
+
+Build outputs appear in `release/`. For development, run `npm run rebuild` and
+then `npm run dev`. Start with a **new alpha library** or a copy of your archive.
+
+---
+
+The upstream README follows.
+
 # LogVue
 
 LogVue is a desktop app for organising and reviewing FTC Control Hub RLOG files. It turns a folder of raw logs into a searchable library of sessions, with match metadata, notes, and links back to the exact logs involved. It is also designed for agentic workflows: the archive stays readable through ordinary filesystem tools, while MCP handles live Control Hub operations.

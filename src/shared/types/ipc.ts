@@ -86,6 +86,8 @@ export interface IpcApi {
   'settings:setArchiveRoot': (path: string) => Promise<AppSettings>
   'settings:setTeamNumber': (teamNumber: number | null) => Promise<AppSettings>
   'settings:setAdbAddress': (address: string) => Promise<AppSettings>
+  'settings:pickAdbExecutable': () => Promise<string | null>
+  'settings:setAdbPath': (path: string | null) => Promise<AppSettings>
   'settings:pickHubLogFolder': () => Promise<string | null>
   'settings:setHubDataSource': (source: AppSettings['hubDataSource']) => Promise<AppSettings>
   'settings:setHubLogFolder': (path: string | null) => Promise<AppSettings>
